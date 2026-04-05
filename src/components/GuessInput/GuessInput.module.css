@@ -1,0 +1,44 @@
+.inputRow {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+.guessInput {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid hsla(0, 0%, 0%, 0.35);
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+}
+
+.guessInput:focus {
+  border-color: #6366f1;
+}
+
+.guessBtn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #6366f1;
+  color: #f5f5f5;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.guessBtn:hover {
+  background-color: #4f46e5;
+}
+
+.guessBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.guessBtn:active {
+  transform: scale(0.96);
+}

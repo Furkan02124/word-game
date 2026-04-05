@@ -1,0 +1,54 @@
+.tile {
+  width: 60px;
+  height: 60px;
+
+  border: 2px solid hsl(230, 94%, 82%);
+  background-color: hsl(210, 40%, 98%);
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  font-weight: 600;
+  color: hsl(217, 33%, 17%);
+
+  transition: all 0.2s ease;
+  animation: popOut 0.18s ease;
+}
+
+.filled {
+  border-color: hsl(239, 84%, 67%);
+  background-color: hsl(226, 100%, 97%);
+  color: hsl(244, 55%, 41%);
+  animation: popIn 0.18s ease;
+}
+
+.tile:hover {
+  border-color: hsl(239, 84%, 67%);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.85);
+  }
+  70% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1.06);
+  }
+  70% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

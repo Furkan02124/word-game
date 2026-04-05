@@ -1,0 +1,6 @@
+.row {
+  display: grid;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 auto;
+}
