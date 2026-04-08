@@ -1,8 +1,8 @@
 import styles from "./HintButton.module.css";
 
-function HintButton({ btnText }) {
-  function handleHint(e) {
-    throw Error("Not Implemented", e);
+function HintButton({ btnText, onHint }) {
+  function handleHint() {
+    onHint();
   }
 
   return (

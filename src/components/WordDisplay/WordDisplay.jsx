@@ -1,17 +1,17 @@
 import Tile from "./Tile";
 import styles from "./WordDisplay.module.css";
-function WordDisplay({ wordLength, guess }) {
+
+function WordDisplay({ letters }) {
   return (
     <div
       className={styles.row}
-      style={{
-        gridTemplateColumns: `repeat(${wordLength}, 60px)`,
-      }}
+      style={{ gridTemplateColumns: `repeat(${letters.length}, 60px)` }}
     >
-      {[...Array(wordLength)].map((_, i) => (
-        <Tile key={i} letter={guess[i] || ""} />
+      {letters.map((letter, i) => (
+        <Tile key={i} letter={letter} />
       ))}
     </div>
   );
 }
+
 export default WordDisplay;

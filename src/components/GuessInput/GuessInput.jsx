@@ -1,28 +1,62 @@
 import styles from "./GuessInput.module.css";
+import { useRef, useEffect } from "react";
+
 function GuessInput({
   guess,
+  mergedGuess,
   setGuess,
-  wordLength,
   placeholderText,
   guessBtnText,
+  onSubmitGuess,
+  setMessage,
+  availableSlots,
 }) {
-  function handleChange(e) {
-    const value = e.target.value.toUpperCase().slice(0, wordLength);
-    setGuess(value);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [mergedGuess]);
+
+  function handleKeyDown(e) {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      setGuess((prev) => prev.slice(0, -1));
+      setMessage("");
+      return;
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSubmitGuess();
+      return;
+    }
+
+    if (/^[a-zA-Z]$/.test(e.key)) {
+      e.preventDefault();
+
+      if (guess.length >= availableSlots) {
+        return;
+      }
+
+      setGuess((prev) => prev + e.key.toUpperCase());
+      setMessage("");
+    }
   }
 
-  function handleGuess(e) {
-    throw Error("Not Implemented", e);
+  function handleGuess() {
+    onSubmitGuess();
   }
 
   return (
     <div className={styles.inputRow}>
       <input
+        ref={inputRef}
         className={styles.guessInput}
         placeholder={placeholderText}
-        value={guess}
+        value={mergedGuess}
         type="text"
-        onChange={handleChange}
+        readOnly
+        onKeyDown={handleKeyDown}
       />
       <button className={styles.guessBtn} onClick={handleGuess}>
         {guessBtnText}
