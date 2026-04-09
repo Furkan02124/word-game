@@ -1,0 +1,31 @@
+.scoreBoard {
+  min-width: 140px;
+  padding: 14px 18px;
+  border: 2px solid #a5b4fc;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.label {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4f46e5;
+}
+
+.value {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  color: #1e1b4b;
+}

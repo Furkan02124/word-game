@@ -1,5 +1,5 @@
+import { useEffect, useRef } from "react";
 import styles from "./GuessInput.module.css";
-import { useRef, useEffect } from "react";
 
 function GuessInput({
   guess,
@@ -10,14 +10,20 @@ function GuessInput({
   onSubmitGuess,
   setMessage,
   availableSlots,
+  disabled = false,
+  focusTrigger,
 }) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, [mergedGuess]);
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  }, [focusTrigger, disabled]);
 
   function handleKeyDown(e) {
+    if (disabled) return;
+
     if (e.key === "Backspace") {
       e.preventDefault();
       setGuess((prev) => prev.slice(0, -1));
@@ -34,9 +40,7 @@ function GuessInput({
     if (/^[a-zA-Z]$/.test(e.key)) {
       e.preventDefault();
 
-      if (guess.length >= availableSlots) {
-        return;
-      }
+      if (guess.length >= availableSlots) return;
 
       setGuess((prev) => prev + e.key.toUpperCase());
       setMessage("");
@@ -57,8 +61,13 @@ function GuessInput({
         type="text"
         readOnly
         onKeyDown={handleKeyDown}
+        disabled={disabled}
       />
-      <button className={styles.guessBtn} onClick={handleGuess}>
+      <button
+        className={styles.guessBtn}
+        onClick={handleGuess}
+        disabled={disabled}
+      >
         {guessBtnText}
       </button>
     </div>

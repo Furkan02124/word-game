@@ -8,16 +8,19 @@ import ScoreBoard from "../components/ScoreBoard/ScoreBoard";
 import styles from "./Game.module.css";
 import words from "../data/words";
 import { shuffleArray, randomIndex } from "../utils/tools";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Game() {
-  const [shuffledWords] = useState(() => shuffleArray(words));
+  const [shuffledWords, setShuffledWords] = useState(() => shuffleArray(words));
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [message, setMessage] = useState("");
   const [score, setScore] = useState(0);
   const [revealedIndexes, setRevealedIndexes] = useState([]);
   const [usedHintsForWord, setUsedHintsForWord] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(180);
+  const [gameStatus, setGameStatus] = useState("playing");
+  const [focusTrigger, setFocusTrigger] = useState(0);
 
   const currentWord = shuffledWords[currentWordIndex];
   const answer = currentWord.answer;
@@ -44,7 +47,37 @@ function Game() {
 
   const mergedGuess = displayLetters.join("");
 
+  useEffect(() => {
+    if (gameStatus !== "playing") return;
+
+    if (timeLeft <= 0) {
+      setGameStatus("lost");
+      setMessage("Time's up!");
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft, gameStatus]);
+
+  function handleRestartGame() {
+    setShuffledWords(shuffleArray(words));
+    setCurrentWordIndex(0);
+    setGuess("");
+    setMessage("");
+    setScore(0);
+    setRevealedIndexes([]);
+    setUsedHintsForWord(0);
+    setTimeLeft(180);
+    setGameStatus("playing");
+    setFocusTrigger((prev) => prev + 1);
+  }
   function handleSubmitGuess() {
+    if (gameStatus !== "playing") return;
+
     const fullGuess = [];
     let typedIndex = 0;
 
@@ -73,7 +106,9 @@ function Game() {
         setCurrentWordIndex((prev) => prev + 1);
         setRevealedIndexes([]);
         setUsedHintsForWord(0);
+        setFocusTrigger((prev) => prev + 1);
       } else {
+        setGameStatus("won");
         setMessage("You finished all words!");
       }
     } else {
@@ -83,6 +118,8 @@ function Game() {
   }
 
   function handleHint() {
+    if (gameStatus !== "playing") return;
+
     const hiddenIndexes = [];
 
     for (let i = 0; i < answer.length; i++) {
@@ -108,7 +145,7 @@ function Game() {
     <div className={styles.container}>
       <div className={styles.topBar}>
         <ScoreBoard score={score} />
-        <Timer />
+        <Timer timeLeft={timeLeft} />
       </div>
 
       <div className={styles.main}>
@@ -133,9 +170,15 @@ function Game() {
               revealedIndexes={revealedIndexes}
               wordLength={wordLength}
               answer={answer}
+              disabled={gameStatus !== "playing"}
+              focusTrigger={focusTrigger}
             />
 
-            <HintButton btnText="Hint" onHint={handleHint} />
+            <HintButton
+              btnText="Hint"
+              onHint={handleHint}
+              disabled={gameStatus !== "playing"}
+            />
           </div>
 
           {message && <p className={styles.message}>{message}</p>}
@@ -143,6 +186,22 @@ function Game() {
 
         <SidePanel />
       </div>
+      {gameStatus !== "playing" && (
+        <div className={styles.overlay}>
+          <div className={styles.gameOverCard}>
+            <h2 className={styles.gameOverTitle}>
+              {gameStatus === "won" ? "You Won!" : "Game Over"}
+            </h2>
+            <p className={styles.gameOverText}>
+              {gameStatus === "won" ? "You finished all words!" : "Time’s up!"}
+            </p>
+            <p className={styles.finalScore}>Final Score: {score}</p>
+            <button className={styles.restartBtn} onClick={handleRestartGame}>
+              Play Again
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

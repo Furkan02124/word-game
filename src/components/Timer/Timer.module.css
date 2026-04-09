@@ -1,0 +1,52 @@
+.timer {
+  min-width: 140px;
+  padding: 14px 18px;
+  border: 2px solid #a5b4fc;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4f46e5;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.value {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e1b4b;
+}
+
+.low {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+}
+
+.low .label {
+  color: #dc2626;
+}
+
+.low .value {
+  color: #991b1b;
+  animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
