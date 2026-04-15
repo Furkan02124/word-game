@@ -1,19 +1,21 @@
-import WordDisplay from "../components/WordDisplay/WordDisplay";
-import ClueBox from "../components/ClueBox/ClueBox";
-import GuessInput from "../components/GuessInput/GuessInput";
-import HintButton from "../components/HintButton/HintButton";
-import Timer from "../components/Timer/Timer";
-import ScoreBoard from "../components/ScoreBoard/ScoreBoard";
+import WordDisplay from "@/components/WordDisplay/WordDisplay";
+import ClueBox from "@/components/ClueBox/ClueBox";
+import GuessInput from "@/components/GuessInput/GuessInput";
+import HintButton from "@/components/HintButton/HintButton";
+import Timer from "@/components/Timer/Timer";
+import ScoreBoard from "@/components/ScoreBoard/ScoreBoard";
+import GameStatus from "@/components/GameStatus/GameStatus";
+import GuessHistory from "@/components/GuessHistory/GuessHistory";
 import styles from "./Game.module.css";
-import words from "../data/words";
+import words from "@/data/words";
 import { useState, useCallback } from "react";
-import useCountdown from "../hooks/useCountdown";
+import useCountdown from "@/hooks/useCountdown";
 import {
   shuffleArray,
   randomIndex,
   getDisplayLetters,
   getMergedGuess,
-} from "../utils/tools";
+} from "@/utils/tools";
 
 function Game() {
   const [shuffledWords, setShuffledWords] = useState(() => shuffleArray(words));
@@ -26,6 +28,7 @@ function Game() {
   const [timeLeft, setTimeLeft] = useState(180);
   const [gameStatus, setGameStatus] = useState("playing");
   const [focusTrigger, setFocusTrigger] = useState(0);
+  const [guessHistory, setGuessHistory] = useState([]);
 
   const currentWord = shuffledWords[currentWordIndex];
   const answer = currentWord.answer;
@@ -35,7 +38,6 @@ function Game() {
   const roundPoints = Math.max(100 - usedHintsForWord * 20, 0);
 
   const isPlaying = gameStatus === "playing";
-  const isWon = gameStatus === "won";
   const totalWords = shuffledWords.length;
   const tileSize = 60;
   const tileGap = 8;
@@ -64,6 +66,7 @@ function Game() {
     setScore(0);
     setRevealedIndexes([]);
     setUsedHintsForWord(0);
+    setGuessHistory([]);
     setTimeLeft(180);
     setGameStatus("playing");
     setFocusTrigger((prev) => prev + 1);
@@ -72,7 +75,7 @@ function Game() {
   function handleSubmitGuess() {
     if (!isPlaying) return;
 
-    const cleanedGuess = guess.trim().toUpperCase();
+    const cleanedGuess = mergedGuess.trim().toUpperCase();
 
     if (cleanedGuess.length !== wordLength || displayLetters.includes("")) {
       setMessage(`Guess must be ${wordLength} letters.`);
@@ -88,15 +91,18 @@ function Game() {
         setCurrentWordIndex((prev) => prev + 1);
         setRevealedIndexes([]);
         setUsedHintsForWord(0);
+        setGuessHistory([]);
         setFocusTrigger((prev) => prev + 1);
       } else {
         setGameStatus("won");
         setMessage("You finished all words!");
       }
-    } else {
-      setMessage("Wrong!");
-      setGuess("");
+      return;
     }
+    setGuessHistory((prev) => [...prev, cleanedGuess]);
+    setMessage("Wrong!");
+    setGuess("");
+    setFocusTrigger((prev) => prev + 1);
   }
 
   function handleHint() {
@@ -166,25 +172,15 @@ function Game() {
             />
           </div>
 
-          {message && <p className={styles.message}>{message}</p>}
+          <p className={styles.message}>{message ? message : ""}</p>
+          <GuessHistory guesses={guessHistory} />
         </div>
       </div>
-      {!isPlaying && (
-        <div className={styles.overlay}>
-          <div className={styles.gameOverCard}>
-            <h2 className={styles.gameOverTitle}>
-              {isWon ? "You Won!" : "Game Over"}
-            </h2>
-            <p className={styles.gameOverText}>
-              {isWon ? "You finished all words!" : "Time’s up!"}
-            </p>
-            <p className={styles.finalScore}>Final Score: {score}</p>
-            <button className={styles.restartBtn} onClick={handleRestartGame}>
-              Play Again
-            </button>
-          </div>
-        </div>
-      )}
+      <GameStatus
+        gameStatus={gameStatus}
+        score={score}
+        onRestart={handleRestartGame}
+      />
     </div>
   );
 }

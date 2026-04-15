@@ -1,0 +1,38 @@
+.container {
+  padding: 20px;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.gameArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.wordSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.message {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #3730a3;
+  min-height: 20px;
+}

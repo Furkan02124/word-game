@@ -1,0 +1,17 @@
+.screen-shell {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.screen-shell.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.screen-shell.is-hidden {
+  opacity: 0;
+  transform: translateY(10px);
+}
