@@ -21,4 +21,30 @@ function shuffleArray(array) {
   return copy;
 }
 
-export { randomIndex, randomIndexExclude, shuffleArray };
+function getDisplayLetters(answer, guess, revealedIndexes) {
+  const displayLetters = [];
+  let typedIndex = 0;
+
+  for (let i = 0; i < answer.length; i += 1) {
+    if (revealedIndexes.includes(i)) {
+      displayLetters.push(answer[i]);
+    } else {
+      displayLetters.push(guess[typedIndex] || "");
+      typedIndex += 1;
+    }
+  }
+
+  return displayLetters;
+}
+
+function getMergedGuess(answer, guess, revealedIndexes) {
+  return getDisplayLetters(answer, guess, revealedIndexes).join("");
+}
+
+export {
+  randomIndex,
+  randomIndexExclude,
+  shuffleArray,
+  getDisplayLetters,
+  getMergedGuess,
+};

@@ -6,9 +6,14 @@ import Timer from "../components/Timer/Timer";
 import ScoreBoard from "../components/ScoreBoard/ScoreBoard";
 import styles from "./Game.module.css";
 import words from "../data/words";
-import { shuffleArray, randomIndex } from "../utils/tools";
 import { useState, useCallback } from "react";
 import useCountdown from "../hooks/useCountdown";
+import {
+  shuffleArray,
+  randomIndex,
+  getDisplayLetters,
+  getMergedGuess,
+} from "../utils/tools";
 
 function Game() {
   const [shuffledWords, setShuffledWords] = useState(() => shuffleArray(words));
@@ -29,24 +34,15 @@ function Game() {
   const availableSlots = wordLength - revealedIndexes.length;
   const roundPoints = Math.max(100 - usedHintsForWord * 20, 0);
 
+  const isPlaying = gameStatus === "playing";
+  const isWon = gameStatus === "won";
   const totalWords = shuffledWords.length;
   const tileSize = 60;
   const tileGap = 8;
   const wordSectionWidth = wordLength * tileSize + (wordLength - 1) * tileGap;
 
-  const displayLetters = [];
-  let typedIndex = 0;
-
-  for (let i = 0; i < wordLength; i++) {
-    if (revealedIndexes.includes(i)) {
-      displayLetters.push(answer[i]);
-    } else {
-      displayLetters.push(guess[typedIndex] || "");
-      typedIndex++;
-    }
-  }
-
-  const mergedGuess = displayLetters.join("");
+  const displayLetters = getDisplayLetters(answer, guess, revealedIndexes);
+  const mergedGuess = getMergedGuess(answer, guess, revealedIndexes);
 
   const handleTimeExpire = useCallback(() => {
     setGameStatus("lost");
@@ -54,7 +50,7 @@ function Game() {
   }, []);
 
   useCountdown({
-    isRunning: gameStatus === "playing",
+    isRunning: isPlaying,
     timeLeft,
     setTimeLeft,
     onExpire: handleTimeExpire,
@@ -72,24 +68,13 @@ function Game() {
     setGameStatus("playing");
     setFocusTrigger((prev) => prev + 1);
   }
+
   function handleSubmitGuess() {
-    if (gameStatus !== "playing") return;
+    if (!isPlaying) return;
 
-    const fullGuess = [];
-    let typedIndex = 0;
+    const cleanedGuess = guess.trim().toUpperCase();
 
-    for (let i = 0; i < wordLength; i++) {
-      if (revealedIndexes.includes(i)) {
-        fullGuess.push(answer[i]);
-      } else {
-        fullGuess.push(guess[typedIndex] || "");
-        typedIndex++;
-      }
-    }
-
-    const cleanedGuess = fullGuess.join("").trim().toUpperCase();
-
-    if (cleanedGuess.length !== wordLength || fullGuess.includes("")) {
+    if (cleanedGuess.length !== wordLength || displayLetters.includes("")) {
       setMessage(`Guess must be ${wordLength} letters.`);
       return;
     }
@@ -115,7 +100,7 @@ function Game() {
   }
 
   function handleHint() {
-    if (gameStatus !== "playing") return;
+    if (!isPlaying) return;
 
     const hiddenIndexes = [];
 
@@ -170,28 +155,28 @@ function Game() {
               revealedIndexes={revealedIndexes}
               wordLength={wordLength}
               answer={answer}
-              disabled={gameStatus !== "playing"}
+              disabled={!isPlaying}
               focusTrigger={focusTrigger}
             />
 
             <HintButton
               btnText="Hint"
               onHint={handleHint}
-              disabled={gameStatus !== "playing"}
+              disabled={!isPlaying || availableSlots === 0}
             />
           </div>
 
           {message && <p className={styles.message}>{message}</p>}
         </div>
       </div>
-      {gameStatus !== "playing" && (
+      {!isPlaying && (
         <div className={styles.overlay}>
           <div className={styles.gameOverCard}>
             <h2 className={styles.gameOverTitle}>
-              {gameStatus === "won" ? "You Won!" : "Game Over"}
+              {isWon ? "You Won!" : "Game Over"}
             </h2>
             <p className={styles.gameOverText}>
-              {gameStatus === "won" ? "You finished all words!" : "Time’s up!"}
+              {isWon ? "You finished all words!" : "Time’s up!"}
             </p>
             <p className={styles.finalScore}>Final Score: {score}</p>
             <button className={styles.restartBtn} onClick={handleRestartGame}>
