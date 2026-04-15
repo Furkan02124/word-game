@@ -2,13 +2,13 @@ import WordDisplay from "../components/WordDisplay/WordDisplay";
 import ClueBox from "../components/ClueBox/ClueBox";
 import GuessInput from "../components/GuessInput/GuessInput";
 import HintButton from "../components/HintButton/HintButton";
-import SidePanel from "../components/SidePanel/SidePanel";
 import Timer from "../components/Timer/Timer";
 import ScoreBoard from "../components/ScoreBoard/ScoreBoard";
 import styles from "./Game.module.css";
 import words from "../data/words";
 import { shuffleArray, randomIndex } from "../utils/tools";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import useCountdown from "../hooks/useCountdown";
 
 function Game() {
   const [shuffledWords, setShuffledWords] = useState(() => shuffleArray(words));
@@ -29,6 +29,7 @@ function Game() {
   const availableSlots = wordLength - revealedIndexes.length;
   const roundPoints = Math.max(100 - usedHintsForWord * 20, 0);
 
+  const totalWords = shuffledWords.length;
   const tileSize = 60;
   const tileGap = 8;
   const wordSectionWidth = wordLength * tileSize + (wordLength - 1) * tileGap;
@@ -47,21 +48,17 @@ function Game() {
 
   const mergedGuess = displayLetters.join("");
 
-  useEffect(() => {
-    if (gameStatus !== "playing") return;
+  const handleTimeExpire = useCallback(() => {
+    setGameStatus("lost");
+    setMessage("Time's up!");
+  }, []);
 
-    if (timeLeft <= 0) {
-      setGameStatus("lost");
-      setMessage("Time's up!");
-      return;
-    }
-
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timeLeft, gameStatus]);
+  useCountdown({
+    isRunning: gameStatus === "playing",
+    timeLeft,
+    setTimeLeft,
+    onExpire: handleTimeExpire,
+  });
 
   function handleRestartGame() {
     setShuffledWords(shuffleArray(words));
@@ -102,7 +99,7 @@ function Game() {
       setScore((prev) => prev + roundPoints);
       setGuess("");
 
-      if (currentWordIndex < shuffledWords.length - 1) {
+      if (currentWordIndex < totalWords - 1) {
         setCurrentWordIndex((prev) => prev + 1);
         setRevealedIndexes([]);
         setUsedHintsForWord(0);
@@ -128,17 +125,20 @@ function Game() {
       }
     }
 
-    if (hiddenIndexes.length > 0) {
-      const randomHiddenPosition = randomIndex(hiddenIndexes.length);
-      const selectedIndex = hiddenIndexes[randomHiddenPosition];
-
-      setRevealedIndexes((prev) => [...prev, selectedIndex]);
-      setUsedHintsForWord((prev) => prev + 1);
-      setMessage("A letter was revealed.");
+    if (hiddenIndexes.length === 0) {
+      setMessage("All letters are already revealed.");
       return;
     }
 
-    setMessage("All letters are already revealed.");
+    const selectedIndex = hiddenIndexes[randomIndex(hiddenIndexes.length)];
+
+    setRevealedIndexes((prev) =>
+      [...prev, selectedIndex].sort((a, b) => a - b)
+    );
+    setUsedHintsForWord((prev) => prev + 1);
+    setGuess("");
+    setMessage("A letter was revealed.");
+    setFocusTrigger((prev) => prev + 1);
   }
 
   return (
@@ -183,8 +183,6 @@ function Game() {
 
           {message && <p className={styles.message}>{message}</p>}
         </div>
-
-        <SidePanel />
       </div>
       {gameStatus !== "playing" && (
         <div className={styles.overlay}>

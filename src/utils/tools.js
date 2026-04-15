@@ -1,6 +1,7 @@
 function randomIndex(max) {
   return Math.floor(Math.random() * max);
 }
+
 function randomIndexExclude(max, exclude) {
   let index;
   do {
