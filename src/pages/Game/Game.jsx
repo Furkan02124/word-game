@@ -7,9 +7,10 @@ import ScoreBoard from "@/components/ScoreBoard/ScoreBoard";
 import GameStatus from "@/components/GameStatus/GameStatus";
 import GuessHistory from "@/components/GuessHistory/GuessHistory";
 import styles from "./Game.module.css";
-import words from "@/data/words";
+import fallbackWords from "@/data/words";
+import { fetchGameWords } from "@/services/wordApi";
 import { playCorrect, playWin, playWrong } from "@/utils/sound";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import useCountdown from "@/hooks/useCountdown";
 import {
   shuffleArray,
@@ -18,8 +19,15 @@ import {
   getMergedGuess,
 } from "@/utils/tools";
 
+const WORD_COUNT = 12;
+const TILE_SIZE = 60;
+const TILE_GAP = 8;
+
 function Game() {
-  const [shuffledWords, setShuffledWords] = useState(() => shuffleArray(words));
+  const [gameWords, setGameWords] = useState([]);
+  const [shuffledWords, setShuffledWords] = useState(() =>
+    shuffleArray(gameWords)
+  );
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [message, setMessage] = useState("");
@@ -32,23 +40,30 @@ function Game() {
   const [guessHistory, setGuessHistory] = useState([]);
   const [justSolved, setJustSolved] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
+  const [isAdvancingWord, setIsAdvancingWord] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const currentWord = shuffledWords[currentWordIndex];
-  const answer = currentWord.answer;
-  const clue = currentWord.clue;
-  const wordLength = answer.length;
-  const availableSlots = wordLength - revealedIndexes.length;
-  const roundPoints = Math.max(wordLength * 20 - usedHintsForWord * 20, 0);
-
-  const hasHiddenLetters = revealedIndexes.length < wordLength;
   const isPlaying = gameStatus === "playing";
-  const totalWords = shuffledWords.length;
-  const tileSize = 60;
-  const tileGap = 8;
-  const wordSectionWidth = wordLength * tileSize + (wordLength - 1) * tileGap;
 
-  const displayLetters = getDisplayLetters(answer, guess, revealedIndexes);
-  const mergedGuess = getMergedGuess(answer, guess, revealedIndexes);
+  useEffect(() => {
+    async function loadWords() {
+      try {
+        const apiWords = await fetchGameWords(WORD_COUNT);
+        const shuffled = shuffleArray(apiWords);
+        setGameWords(apiWords);
+        setShuffledWords(shuffled);
+        // eslint-disable-next-line no-unused-vars
+      } catch (error) {
+        const shuffled = shuffleArray(fallbackWords);
+        setGameWords(fallbackWords);
+        setShuffledWords(shuffled);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadWords();
+  }, []);
 
   const handleTimeExpire = useCallback(() => {
     setGameStatus("lost");
@@ -62,8 +77,27 @@ function Game() {
     onExpire: handleTimeExpire,
   });
 
+  if (isLoading) {
+    return <div className={styles.container}>Loading words...</div>;
+  }
+
+  if (!shuffledWords.length) {
+    return <div className={styles.container}>Could not load words.</div>;
+  }
+
+  const currentWord = shuffledWords[currentWordIndex];
+  const answer = currentWord.answer;
+  const clue = currentWord.clue;
+  const wordLength = answer.length;
+  const availableSlots = wordLength - revealedIndexes.length;
+  const roundPoints = Math.max(wordLength * 20 - usedHintsForWord * 20, 0);
+  const hasHiddenLetters = revealedIndexes.length < wordLength;
+  const wordSectionWidth = wordLength * TILE_SIZE + (wordLength - 1) * TILE_GAP;
+  const displayLetters = getDisplayLetters(answer, guess, revealedIndexes);
+  const mergedGuess = getMergedGuess(answer, guess, revealedIndexes);
+
   function handleRestartGame() {
-    setShuffledWords(shuffleArray(words));
+    setShuffledWords(shuffleArray(gameWords));
     setCurrentWordIndex(0);
     setGuess("");
     setMessage("");
@@ -77,7 +111,7 @@ function Game() {
   }
 
   function handleSubmitGuess() {
-    if (!isPlaying) return;
+    if (!isPlaying || isAdvancingWord) return;
 
     const cleanedGuess = mergedGuess.trim().toUpperCase();
 
@@ -87,21 +121,24 @@ function Game() {
     }
 
     if (cleanedGuess === answer) {
+      setIsAdvancingWord(true);
       setMessage("Correct!");
       playCorrect();
       setJustSolved(true);
 
       setTimeout(() => {
         setJustSolved(false);
+
         const newScore = score + roundPoints;
         setScore(newScore);
 
-        const isLastWord = currentWordIndex === totalWords - 1;
+        const isLastWord = currentWordIndex === WORD_COUNT - 1;
 
         if (isLastWord) {
           setGameStatus("won");
           playWin();
           setMessage("You completed all words!");
+          setIsAdvancingWord(false);
           return;
         }
 
@@ -111,6 +148,7 @@ function Game() {
         setUsedHintsForWord(0);
         setGuessHistory([]);
         setMessage("");
+        setIsAdvancingWord(false);
       }, 600);
 
       return;
@@ -129,7 +167,7 @@ function Game() {
   }
 
   function handleHint() {
-    if (!isPlaying) return;
+    if (!isPlaying || isAdvancingWord) return;
 
     const hiddenIndexes = [];
 
@@ -161,7 +199,7 @@ function Game() {
         <ScoreBoard
           score={score}
           currentRound={currentWordIndex + 1}
-          totalWords={totalWords}
+          totalWords={WORD_COUNT}
           roundPoints={roundPoints}
         />
         <Timer timeLeft={timeLeft} />
@@ -193,14 +231,14 @@ function Game() {
               revealedIndexes={revealedIndexes}
               wordLength={wordLength}
               answer={answer}
-              disabled={!isPlaying}
+              disabled={!isPlaying || isAdvancingWord}
               focusTrigger={focusTrigger}
             />
 
             <HintButton
               btnText="Hint"
               onHint={handleHint}
-              disabled={!isPlaying || !hasHiddenLetters}
+              disabled={!isPlaying || !hasHiddenLetters || isAdvancingWord}
             />
           </div>
 
