@@ -20,3 +20,20 @@
 .hintBtn:active {
   transform: scale(0.96);
 }
+
+.hintBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #a1a1aa;
+  background-color: #e5e7eb;
+  color: #71717a;
+}
+
+.hintBtn:disabled:hover {
+  background-color: #e5e7eb;
+  border-color: #a1a1aa;
+}
+
+.hintBtn:disabled:active {
+  transform: none;
+}

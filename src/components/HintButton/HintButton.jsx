@@ -2,6 +2,7 @@ import styles from "./HintButton.module.css";
 
 function HintButton({ btnText, onHint, disabled = false }) {
   function handleHint() {
+    if (disabled) return;
     onHint();
   }
 

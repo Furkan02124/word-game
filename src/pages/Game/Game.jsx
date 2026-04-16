@@ -8,6 +8,7 @@ import GameStatus from "@/components/GameStatus/GameStatus";
 import GuessHistory from "@/components/GuessHistory/GuessHistory";
 import styles from "./Game.module.css";
 import words from "@/data/words";
+import { playCorrect, playWin, playWrong } from "@/utils/sound";
 import { useState, useCallback } from "react";
 import useCountdown from "@/hooks/useCountdown";
 import {
@@ -29,14 +30,17 @@ function Game() {
   const [gameStatus, setGameStatus] = useState("playing");
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [guessHistory, setGuessHistory] = useState([]);
+  const [justSolved, setJustSolved] = useState(false);
+  const [isWrong, setIsWrong] = useState(false);
 
   const currentWord = shuffledWords[currentWordIndex];
   const answer = currentWord.answer;
   const clue = currentWord.clue;
   const wordLength = answer.length;
   const availableSlots = wordLength - revealedIndexes.length;
-  const roundPoints = Math.max(100 - usedHintsForWord * 20, 0);
+  const roundPoints = Math.max(wordLength * 20 - usedHintsForWord * 20, 0);
 
+  const hasHiddenLetters = revealedIndexes.length < wordLength;
   const isPlaying = gameStatus === "playing";
   const totalWords = shuffledWords.length;
   const tileSize = 60;
@@ -84,23 +88,42 @@ function Game() {
 
     if (cleanedGuess === answer) {
       setMessage("Correct!");
-      setScore((prev) => prev + roundPoints);
-      setGuess("");
+      playCorrect();
+      setJustSolved(true);
 
-      if (currentWordIndex < totalWords - 1) {
+      setTimeout(() => {
+        setJustSolved(false);
+        const newScore = score + roundPoints;
+        setScore(newScore);
+
+        const isLastWord = currentWordIndex === totalWords - 1;
+
+        if (isLastWord) {
+          setGameStatus("won");
+          playWin();
+          setMessage("You completed all words!");
+          return;
+        }
+
         setCurrentWordIndex((prev) => prev + 1);
+        setGuess("");
         setRevealedIndexes([]);
         setUsedHintsForWord(0);
         setGuessHistory([]);
-        setFocusTrigger((prev) => prev + 1);
-      } else {
-        setGameStatus("won");
-        setMessage("You finished all words!");
-      }
+        setMessage("");
+      }, 600);
+
       return;
     }
     setGuessHistory((prev) => [...prev, cleanedGuess]);
+    setIsWrong(true);
+    playWrong();
     setMessage("Wrong!");
+
+    setTimeout(() => {
+      setIsWrong(false);
+    }, 350);
+
     setGuess("");
     setFocusTrigger((prev) => prev + 1);
   }
@@ -135,7 +158,12 @@ function Game() {
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
-        <ScoreBoard score={score} />
+        <ScoreBoard
+          score={score}
+          currentRound={currentWordIndex + 1}
+          totalWords={totalWords}
+          roundPoints={roundPoints}
+        />
         <Timer timeLeft={timeLeft} />
       </div>
 
@@ -145,7 +173,11 @@ function Game() {
             className={styles.wordSection}
             style={{ width: `${wordSectionWidth}px` }}
           >
-            <WordDisplay letters={displayLetters} />
+            <WordDisplay
+              letters={displayLetters}
+              isCorrect={justSolved}
+              isWrong={isWrong}
+            />
 
             <ClueBox clue={clue} />
 
@@ -168,7 +200,7 @@ function Game() {
             <HintButton
               btnText="Hint"
               onHint={handleHint}
-              disabled={!isPlaying || availableSlots === 0}
+              disabled={!isPlaying || !hasHiddenLetters}
             />
           </div>
 

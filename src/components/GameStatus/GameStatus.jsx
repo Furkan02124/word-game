@@ -1,6 +1,21 @@
 import styles from "./GameStatus.module.css";
+import { useEffect } from "react";
 
 function GameStatus({ gameStatus, score, onRestart }) {
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Enter" && !e.repeat && gameStatus !== "playing") {
+        onRestart();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onRestart, gameStatus]);
+
   if (gameStatus === "playing") return null;
 
   const isWon = gameStatus === "won";
