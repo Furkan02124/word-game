@@ -19,7 +19,9 @@ function StartScreen({ onStart }) {
   return (
     <section className={styles.screen}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Word Game</h1>
+        <h1 className={styles.title}>
+          Word<span className={styles.highlight}>Rush</span>
+        </h1>
 
         <p className={styles.subtitle}>
           Guess the word from the clue before the timer runs out.

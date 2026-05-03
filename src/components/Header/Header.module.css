@@ -24,10 +24,15 @@
   text-align: center;
 }
 
+.title span {
+  color: hsl(243, 75%, 59%);
+  font-weight: 800;
+}
+
 .subtitle {
   font-size: clamp(1rem, 3.5vw, 1.3rem);
   margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: 400;
   color: #6366f1;
 }
 

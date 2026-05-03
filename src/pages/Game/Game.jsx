@@ -15,9 +15,7 @@ import { playCorrect, playWin, playWrong, toggleMute } from "@/utils/sound";
 import { randomIndex, getDisplayLetters, getMergedGuess } from "@/utils/tools";
 import { buildDifficultyGameWords } from "@/utils/wordPicker";
 
-const WORD_COUNT = 2;
-const TILE_SIZE = 60;
-const TILE_GAP = 8;
+const WORD_COUNT = 12;
 
 function Game({ isMuted, onBackToStart }) {
   const [shuffledWords, setShuffledWords] = useState([]);

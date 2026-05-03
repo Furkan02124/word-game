@@ -5,7 +5,9 @@ function Header({ isMuted, onToggleMute }) {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.topRow}>
-          <h1 className={styles.title}>Word Game</h1>
+          <h1 className={styles.title}>
+            Word<span>Rush</span>
+          </h1>
           <button
             className={styles.muteBtn}
             onClick={onToggleMute}
@@ -16,7 +18,7 @@ function Header({ isMuted, onToggleMute }) {
             </span>
           </button>
         </div>
-        <p className={styles.subtitle}>Guess the word before time runs out</p>
+        <p className={styles.subtitle}>Beat the clock. Find the word.</p>
       </div>
     </header>
   );

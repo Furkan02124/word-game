@@ -37,7 +37,13 @@ function GameStatus({ gameStatus, score, onRestart, onBackToStart }) {
           {isWon ? "You finished all words!" : "Time’s up!"}
         </p>
 
-        <p className={styles.score}>Final Score: {score}</p>
+        <p
+          className={`${styles.score} ${
+            gameStatus === "won" ? styles.winScore : styles.loseScore
+          }`}
+        >
+          Final Score: {score}
+        </p>
         <div className={styles.actions}>
           <button type="button" className={styles.button} onClick={onRestart}>
             Play Again
