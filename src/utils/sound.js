@@ -1,35 +1,41 @@
-import correctSrc from "@/assets/sounds/correct.mp3";
-import wrongSrc from "@/assets/sounds/wrong.mp3";
-import winSrc from "@/assets/sounds/win.mp3";
+import correctSoundSrc from "@/assets/sounds/correct.mp3";
+import wrongSoundSrc from "@/assets/sounds/wrong.mp3";
+import winSoundSrc from "@/assets/sounds/win.mp3";
 
-const correctSound = new Audio(correctSrc);
-const wrongSound = new Audio(wrongSrc);
-const winSound = new Audio(winSrc);
+const correctSound = new Audio(correctSoundSrc);
+const wrongSound = new Audio(wrongSoundSrc);
+const winSound = new Audio(winSoundSrc);
 
-let muted = false;
 correctSound.volume = 0.4;
 wrongSound.volume = 0.4;
-winSound.volume = 0.4;
+winSound.volume = 0.5;
 
-export function toggleMute(value) {
+let muted = false;
+
+export function setMuted(value) {
   muted = value;
 }
 
-export function play(sound) {
+function playSound(sound, { varyPitch = false } = {}) {
   if (muted) return;
+
   sound.currentTime = 0;
-  sound.playbackRate = 1 + Math.random() * 0.05;
-  sound.play();
+
+  if (varyPitch) {
+    sound.playbackRate = 1 + Math.random() * 0.05;
+  }
+
+  sound.play().catch(() => {});
 }
 
 export function playCorrect() {
-  play(correctSound);
+  playSound(correctSound, { varyPitch: true });
 }
 
 export function playWrong() {
-  play(wrongSound);
+  playSound(wrongSound, { varyPitch: true });
 }
 
 export function playWin() {
-  play(winSound);
+  playSound(winSound);
 }

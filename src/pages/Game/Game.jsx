@@ -11,7 +11,7 @@ import GameStatus from "@/components/GameStatus/GameStatus";
 import GuessHistory from "@/components/GuessHistory/GuessHistory";
 
 import useCountdown from "@/hooks/useCountdown";
-import { playCorrect, playWin, playWrong, toggleMute } from "@/utils/sound";
+import { playCorrect, playWin, playWrong, setMuted } from "@/utils/sound";
 import { randomIndex, getDisplayLetters, getMergedGuess } from "@/utils/tools";
 import { buildDifficultyGameWords } from "@/utils/wordPicker";
 
@@ -44,9 +44,7 @@ function Game({ isMuted, onBackToStart }) {
   }, []);
 
   useEffect(() => {
-    if (isMuted) {
-      toggleMute();
-    }
+    setMuted(isMuted);
   }, [isMuted]);
 
   const updateBestScore = useCallback(
