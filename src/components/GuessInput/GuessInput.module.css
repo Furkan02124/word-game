@@ -42,3 +42,18 @@
 .guessBtn:active {
   transform: scale(0.96);
 }
+
+@media (max-width: 480px) {
+  .inputRow {
+    gap: 8px;
+  }
+
+  .guessBtn {
+    padding: 10px 12px;
+    font-size: 18px;
+  }
+
+  .guessInput {
+    min-width: 0;
+  }
+}

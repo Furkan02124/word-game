@@ -1,15 +1,15 @@
 .timer {
-  width: fit-content;
+  width: 130px;
   padding: 10px 14px;
   border: 2px solid #a5b4fc;
   border-radius: 12px;
   background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
   box-shadow: 0 6px 16px rgba(79, 70, 229, 0.1);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  align-self: center;
 }
 
 .label {

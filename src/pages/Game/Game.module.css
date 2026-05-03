@@ -5,30 +5,27 @@
   box-sizing: border-box;
 }
 
-/* TOP BAR: left + right anchored */
 .topBar {
   width: 100%;
+  margin: 16px auto 20px;
   display: flex;
-  align-items: flex-start;
-  margin-top: 16px;
+  align-items: center;
 }
 
-/* left = scoreboard */
 .left {
   display: flex;
+  width: 260px;
 }
 
-/* pushes timer to right */
 .spacer {
   flex: 1;
 }
 
-/* right = timer */
 .right {
   display: flex;
+  width: 260px;
 }
 
-/* center gameplay */
 .main {
   display: flex;
   justify-content: center;
@@ -60,12 +57,17 @@
   text-align: center;
 }
 
-/* MOBILE */
 @media (max-width: 640px) {
+  .container {
+    padding: 0 14px;
+  }
+
   .topBar {
+    width: min(420px, 100%);
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    margin: 10px auto 18px;
   }
 
   .spacer {
@@ -77,7 +79,18 @@
     justify-content: center;
   }
 
+  .main {
+    margin-top: 16px;
+  }
+
   .gameArea {
     width: 100%;
+    gap: 18px;
+  }
+
+  .controlSection {
+    width: min(420px, 100%);
+    gap: 12px;
+    margin-top: 14px;
   }
 }

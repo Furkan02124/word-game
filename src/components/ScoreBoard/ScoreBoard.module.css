@@ -1,9 +1,10 @@
 .scoreBoard {
   display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
   gap: 10px;
-  width: fit-content;
-  margin: 0 auto;
+  width: min(300px, 100%);
+  margin: 0;
+  align-self: center;
 }
 
 .block {
