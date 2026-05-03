@@ -9,9 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "generate:words": "node tools/generateCommonWords.js",
+    "generate:bank": "node tools/generateWordBank.js"
   },
   "dependencies": {
+    "natural": "^8.1.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

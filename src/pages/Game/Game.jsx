@@ -1,3 +1,6 @@
+import { useState, useCallback, useEffect } from "react";
+import styles from "./Game.module.css";
+
 import WordDisplay from "@/components/WordDisplay/WordDisplay";
 import ClueBox from "@/components/ClueBox/ClueBox";
 import GuessInput from "@/components/GuessInput/GuessInput";
@@ -6,28 +9,18 @@ import Timer from "@/components/Timer/Timer";
 import ScoreBoard from "@/components/ScoreBoard/ScoreBoard";
 import GameStatus from "@/components/GameStatus/GameStatus";
 import GuessHistory from "@/components/GuessHistory/GuessHistory";
-import styles from "./Game.module.css";
-import fallbackWords from "@/data/words";
-import { fetchGameWords } from "@/services/wordApi";
-import { playCorrect, playWin, playWrong } from "@/utils/sound";
-import { useState, useCallback, useEffect } from "react";
+
 import useCountdown from "@/hooks/useCountdown";
-import {
-  shuffleArray,
-  randomIndex,
-  getDisplayLetters,
-  getMergedGuess,
-} from "@/utils/tools";
+import { playCorrect, playWin, playWrong } from "@/utils/sound";
+import { randomIndex, getDisplayLetters, getMergedGuess } from "@/utils/tools";
+import { buildDifficultyGameWords } from "@/utils/wordPicker";
 
 const WORD_COUNT = 12;
 const TILE_SIZE = 60;
 const TILE_GAP = 8;
 
 function Game() {
-  const [gameWords, setGameWords] = useState([]);
-  const [shuffledWords, setShuffledWords] = useState(() =>
-    shuffleArray(gameWords)
-  );
+  const [shuffledWords, setShuffledWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [message, setMessage] = useState("");
@@ -42,33 +35,31 @@ function Game() {
   const [isWrong, setIsWrong] = useState(false);
   const [isAdvancingWord, setIsAdvancingWord] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [bestScore, setBestScore] = useState(() => {
+    return Number(localStorage.getItem("bestScore")) || 0;
+  });
 
   const isPlaying = gameStatus === "playing";
 
   useEffect(() => {
-    async function loadWords() {
-      try {
-        const apiWords = await fetchGameWords(WORD_COUNT);
-        const shuffled = shuffleArray(apiWords);
-        setGameWords(apiWords);
-        setShuffledWords(shuffled);
-        // eslint-disable-next-line no-unused-vars
-      } catch (error) {
-        const shuffled = shuffleArray(fallbackWords);
-        setGameWords(fallbackWords);
-        setShuffledWords(shuffled);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
     loadWords();
   }, []);
 
+  const updateBestScore = useCallback(
+    (finalScore) => {
+      if (finalScore <= bestScore) return;
+
+      setBestScore(finalScore);
+      localStorage.setItem("bestScore", String(finalScore));
+    },
+    [bestScore]
+  );
+
   const handleTimeExpire = useCallback(() => {
+    updateBestScore(score);
     setGameStatus("lost");
     setMessage("Time's up!");
-  }, []);
+  }, [score, updateBestScore]);
 
   useCountdown({
     isRunning: isPlaying,
@@ -85,9 +76,23 @@ function Game() {
     return <div className={styles.container}>Could not load words.</div>;
   }
 
+  function loadWords() {
+    setIsLoading(true);
+
+    try {
+      const words = buildDifficultyGameWords();
+      setShuffledWords(words);
+    } catch (error) {
+      console.error("WordBank load failed:", error);
+      setShuffledWords([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const currentWord = shuffledWords[currentWordIndex];
   const answer = currentWord.answer;
-  const clue = currentWord.clue;
+  const clue = currentWord.clue[0].toUpperCase() + currentWord.clue.slice(1);
   const wordLength = answer.length;
   const availableSlots = wordLength - revealedIndexes.length;
   const roundPoints = Math.max(wordLength * 20 - usedHintsForWord * 20, 0);
@@ -97,7 +102,6 @@ function Game() {
   const mergedGuess = getMergedGuess(answer, guess, revealedIndexes);
 
   function handleRestartGame() {
-    setShuffledWords(shuffleArray(gameWords));
     setCurrentWordIndex(0);
     setGuess("");
     setMessage("");
@@ -108,6 +112,7 @@ function Game() {
     setTimeLeft(180);
     setGameStatus("playing");
     setFocusTrigger((prev) => prev + 1);
+    loadWords();
   }
 
   function handleSubmitGuess() {
@@ -137,6 +142,7 @@ function Game() {
         if (isLastWord) {
           setGameStatus("won");
           playWin();
+          updateBestScore(newScore);
           setMessage("You completed all words!");
           setIsAdvancingWord(false);
           return;
@@ -201,6 +207,7 @@ function Game() {
           currentRound={currentWordIndex + 1}
           totalWords={WORD_COUNT}
           roundPoints={roundPoints}
+          bestScore={bestScore}
         />
         <Timer timeLeft={timeLeft} />
       </div>

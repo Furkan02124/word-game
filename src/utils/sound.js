@@ -6,24 +6,30 @@ const correctSound = new Audio(correctSrc);
 const wrongSound = new Audio(wrongSrc);
 const winSound = new Audio(winSrc);
 
+let muted = false;
 correctSound.volume = 0.4;
 wrongSound.volume = 0.4;
 winSound.volume = 0.4;
 
+export function toggleMute(value) {
+  muted = value;
+}
+
+export function play(sound) {
+  if (muted) return;
+  sound.currentTime = 0;
+  sound.playbackRate = 1 + Math.random() * 0.05;
+  sound.play();
+}
+
 export function playCorrect() {
-  correctSound.currentTime = 0;
-  correctSound.playbackRate = 1 + Math.random() * 0.05;
-  correctSound.play();
+  play(correctSound);
 }
 
 export function playWrong() {
-  wrongSound.currentTime = 0;
-  wrongSound.playbackRate = 1 + Math.random() * 0.05;
-  wrongSound.play();
+  play(wrongSound);
 }
 
 export function playWin() {
-  winSound.currentTime = 0;
-  winSound.playbackRate = 1 + Math.random() * 0.05;
-  winSound.play();
+  play(winSound);
 }

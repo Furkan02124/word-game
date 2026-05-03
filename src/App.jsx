@@ -9,6 +9,8 @@ function App() {
 
   const TRANSITION_DURATION = 250;
 
+  const [isMuted, setIsMuted] = useState(false);
+
   function handleStart() {
     setVisible(false);
 
@@ -20,9 +22,16 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header
+        isMuted={isMuted}
+        onToggleMute={() => setIsMuted((prev) => !prev)}
+      />
       <main className={`screen-shell ${visible ? "is-visible" : "is-hidden"}`}>
-        {gameStarted ? <Game /> : <StartScreen onStart={handleStart} />}
+        {gameStarted ? (
+          <Game isMuted={isMuted} />
+        ) : (
+          <StartScreen onStart={handleStart} />
+        )}
       </main>
     </div>
   );
