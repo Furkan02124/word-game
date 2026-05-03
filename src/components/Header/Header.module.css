@@ -10,15 +10,15 @@
 }
 
 .title {
-  margin: 0;
-  font-size: 2rem;
+  margin-bottom: 6px;
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 800;
   color: #1e1b4b;
 }
 
 .subtitle {
-  margin: 6px 0 0;
-  font-size: 1rem;
+  font-size: clamp(1rem, 3.5vw, 1.3rem);
+  margin-bottom: 6px;
   font-weight: 500;
   color: #6366f1;
 }

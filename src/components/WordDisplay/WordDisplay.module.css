@@ -1,6 +1,9 @@
 .row {
   display: grid;
-  gap: 8px;
+  grid-auto-flow: column;
+  gap: clamp(4px, 0.8vw, 6px);
   justify-content: center;
   margin: 0 auto;
+  width: fit-content;
+  max-width: 100%;
 }

@@ -11,15 +11,15 @@ import GameStatus from "@/components/GameStatus/GameStatus";
 import GuessHistory from "@/components/GuessHistory/GuessHistory";
 
 import useCountdown from "@/hooks/useCountdown";
-import { playCorrect, playWin, playWrong } from "@/utils/sound";
+import { playCorrect, playWin, playWrong, toggleMute } from "@/utils/sound";
 import { randomIndex, getDisplayLetters, getMergedGuess } from "@/utils/tools";
 import { buildDifficultyGameWords } from "@/utils/wordPicker";
 
-const WORD_COUNT = 12;
+const WORD_COUNT = 2;
 const TILE_SIZE = 60;
 const TILE_GAP = 8;
 
-function Game() {
+function Game({ isMuted, onBackToStart }) {
   const [shuffledWords, setShuffledWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [guess, setGuess] = useState("");
@@ -44,6 +44,12 @@ function Game() {
   useEffect(() => {
     loadWords();
   }, []);
+
+  useEffect(() => {
+    if (isMuted) {
+      toggleMute();
+    }
+  }, [isMuted]);
 
   const updateBestScore = useCallback(
     (finalScore) => {
@@ -97,7 +103,6 @@ function Game() {
   const availableSlots = wordLength - revealedIndexes.length;
   const roundPoints = Math.max(wordLength * 20 - usedHintsForWord * 20, 0);
   const hasHiddenLetters = revealedIndexes.length < wordLength;
-  const wordSectionWidth = wordLength * TILE_SIZE + (wordLength - 1) * TILE_GAP;
   const displayLetters = getDisplayLetters(answer, guess, revealedIndexes);
   const mergedGuess = getMergedGuess(answer, guess, revealedIndexes);
 
@@ -202,28 +207,29 @@ function Game() {
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
-        <ScoreBoard
-          score={score}
-          currentRound={currentWordIndex + 1}
-          totalWords={WORD_COUNT}
-          roundPoints={roundPoints}
-          bestScore={bestScore}
-        />
-        <Timer timeLeft={timeLeft} />
+        <div className={styles.left}>
+          <ScoreBoard
+            score={score}
+            currentRound={currentWordIndex + 1}
+            totalWords={WORD_COUNT}
+            roundPoints={roundPoints}
+            bestScore={bestScore}
+          />
+        </div>
+        <div className={styles.spacer} />
+        <div className={styles.right}>
+          <Timer timeLeft={timeLeft} />
+        </div>
       </div>
 
       <div className={styles.main}>
-        <div className={styles.gameArea}>
-          <div
-            className={styles.wordSection}
-            style={{ width: `${wordSectionWidth}px` }}
-          >
-            <WordDisplay
-              letters={displayLetters}
-              isCorrect={justSolved}
-              isWrong={isWrong}
-            />
-
+        <section className={styles.gameArea}>
+          <WordDisplay
+            letters={displayLetters}
+            isCorrect={justSolved}
+            isWrong={isWrong}
+          />
+          <div className={styles.controlSection}>
             <ClueBox clue={clue} />
 
             <GuessInput
@@ -251,12 +257,13 @@ function Game() {
 
           <p className={styles.message}>{message ? message : ""}</p>
           <GuessHistory guesses={guessHistory} />
-        </div>
+        </section>
       </div>
       <GameStatus
         gameStatus={gameStatus}
         score={score}
         onRestart={handleRestartGame}
+        onBackToStart={onBackToStart}
       />
     </div>
   );

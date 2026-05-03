@@ -3,10 +3,7 @@ import styles from "./WordDisplay.module.css";
 
 function WordDisplay({ letters, isCorrect, isWrong }) {
   return (
-    <div
-      className={styles.row}
-      style={{ gridTemplateColumns: `repeat(${letters.length}, 60px)` }}
-    >
+    <div className={styles.row}>
       {letters.map((letter, i) => (
         <Tile
           key={i}

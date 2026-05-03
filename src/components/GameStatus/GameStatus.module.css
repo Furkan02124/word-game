@@ -7,22 +7,32 @@
   justify-content: center;
   padding: 24px;
   z-index: 20;
+  animation: fadeIn 0.2s ease;
 }
 
 .card {
-  width: 90%;
+  width: min(420px, 90%);
   max-width: 420px;
   padding: 32px 24px;
   border-radius: 20px;
   background: white;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
   text-align: center;
+  animation: popIn 0.25s ease;
 }
 
 .title {
   margin: 0 0 10px;
   font-size: 2rem;
   font-weight: 700;
+}
+
+.win {
+  color: #22c55e;
+}
+
+.lose {
+  color: #ef4444;
 }
 
 .subtitle {
@@ -42,11 +52,14 @@
   border: none;
   border-radius: 10px;
   padding: 12px 20px;
+  width: 100%;
+  max-width: 220px;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
   background: hsl(243, 75%, 59%);
   color: white;
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.25);
   transition:
     transform 0.15s ease,
     opacity 0.15s ease,
@@ -61,4 +74,57 @@
 .button:active {
   transform: translateY(0);
   transform: scale(0.97);
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.backBtn {
+  border: 2px solid hsl(239, 84%, 75%);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: none;
+  background: hsl(226, 100%, 97%);
+  color: hsl(244, 55%, 41%);
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.backBtn:hover {
+  background-color: hsl(226, 100%, 94%);
+  border-color: hsl(239, 84%, 67%);
+  transform: translateY(-1px);
+}
+
+.backBtn:active {
+  transform: scale(0.97);
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

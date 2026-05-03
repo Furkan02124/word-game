@@ -1,32 +1,54 @@
 .container {
-  padding: 20px;
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 
+/* TOP BAR: left + right anchored */
 .topBar {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
+  align-items: flex-start;
+  margin-top: 16px;
 }
 
+/* left = scoreboard */
+.left {
+  display: flex;
+}
+
+/* pushes timer to right */
+.spacer {
+  flex: 1;
+}
+
+/* right = timer */
+.right {
+  display: flex;
+}
+
+/* center gameplay */
 .main {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .gameArea {
-  flex: 1;
+  width: min(520px, 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-.wordSection {
+.controlSection {
+  width: min(420px, 100%);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-items: stretch;
+  gap: 14px;
+  margin-top: 18px;
 }
 
 .message {
@@ -35,4 +57,27 @@
   font-weight: 600;
   color: #3730a3;
   min-height: 20px;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+  .topBar {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+  .left,
+  .right {
+    justify-content: center;
+  }
+
+  .gameArea {
+    width: 100%;
+  }
 }

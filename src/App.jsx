@@ -20,6 +20,15 @@ function App() {
     }, TRANSITION_DURATION);
   }
 
+  function handleBackToStart() {
+    setVisible(false);
+
+    setTimeout(() => {
+      setGameStarted(false);
+      setVisible(true);
+    }, TRANSITION_DURATION);
+  }
+
   return (
     <div className="app">
       <Header
@@ -28,7 +37,7 @@ function App() {
       />
       <main className={`screen-shell ${visible ? "is-visible" : "is-hidden"}`}>
         {gameStarted ? (
-          <Game isMuted={isMuted} />
+          <Game isMuted={isMuted} onBackToStart={handleBackToStart} />
         ) : (
           <StartScreen onStart={handleStart} />
         )}

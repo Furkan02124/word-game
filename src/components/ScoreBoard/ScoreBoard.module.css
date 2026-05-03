@@ -1,23 +1,24 @@
 .scoreBoard {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .block {
-  min-width: 120px;
-  padding: 14px 18px;
+  min-width: 0;
+  padding: 10px 12px;
   border: 2px solid #a5b4fc;
-  border-radius: 14px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.12);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.1);
   text-align: center;
 }
 
 .label {
-  margin: 0 0 6px;
-  font-size: 13px;
+  margin: 0 0 4px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -26,8 +27,22 @@
 
 .value {
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   line-height: 1;
   color: #1e1b4b;
+}
+
+@media (max-width: 480px) {
+  .scoreBoard {
+    gap: 8px;
+  }
+
+  .block {
+    padding: 9px 10px;
+  }
+
+  .value {
+    font-size: 22px;
+  }
 }

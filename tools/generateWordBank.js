@@ -49,9 +49,9 @@ function cleanDefinition(definition, word) {
 
   cleaned = cleaned.trim();
 
-  if (cleaned.length < 15) return null;
+  if (cleaned.length < 20) return null;
 
-  if (cleaned.length > 120) return null;
+  if (cleaned.length > 100) return null;
 
   if (/[^a-zA-Z0-9\s,.-]/.test(cleaned)) return null;
 
@@ -78,7 +78,7 @@ async function buildWordBank() {
       answer: word.toUpperCase(),
       clues,
       length: word.length,
-      difficulty: getDifficulty(i, word),
+      difficulty: getDifficulty(i, word, clues.length),
     });
 
     console.log(`✔ ${word}`);
@@ -96,9 +96,23 @@ export default wordBank;
   fs.writeFileSync(OUTPUT_FILE, content);
 }
 
-function getDifficulty(index, word) {
-  if (word.length <= 5 && index < 2000) return "easy";
-  if (word.length <= 6 && index < 5000) return "medium";
+function getDifficulty(index, word, clueCount) {
+  let score = 0;
+
+  if (index < 1000) score += 0;
+  else if (index < 3000) score += 1;
+  else score += 2;
+
+  if (word.length <= 5) score += 0;
+  else if (word.length <= 6) score += 1;
+  else score += 2;
+
+  if (clueCount <= 1) score += 1;
+
+  if (/[qxzj]/.test(word)) score += 1;
+
+  if (score <= 1) return "easy";
+  if (score <= 3) return "medium";
   return "hard";
 }
 
