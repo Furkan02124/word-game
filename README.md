@@ -1,3 +1,6 @@
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite)
+![Status](https://img.shields.io/badge/status-alpha-orange)
 # WordRush
 
 WordRush is a fast-paced word guessing game built with React. Players must guess words from clues before the timer runs out. The game features hints, scoring, animations, and a smooth responsive UI.
@@ -24,10 +27,14 @@ https://wordrush-alpha.vercel.app/
 ---
 ## Screenshots
 
-![Start](public/screenshots/start.png)
-![Gameplay](public/screenshots/gameplay.png)
-![Game Over](public/screenshots/gameover.png)
+<p align="center">
+  <img src="public/screenshots/start.png" width="600"/>
+  <img src="public/screenshots/gameplay.png" width="600"/>
+  <img src="public/screenshots/gameover.png" width="600"/>
+</p>
+
 ---
+
 ## Tech Stack
 
 - React
@@ -105,4 +112,4 @@ tools/
 
 ## Status
 
-Alpha version deployed
+🚀 Alpha version deployed
