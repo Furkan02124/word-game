@@ -51,6 +51,13 @@ function GuessInput({
     onSubmitGuess();
   }
 
+  const handleChange = (e) => {
+    const value = e.target.value.toUpperCase();
+
+    if (/^[A-Z]*$/.test(value)) {
+      setGuess(value);
+    }
+  };
   return (
     <div className={styles.inputRow}>
       <input
@@ -59,7 +66,7 @@ function GuessInput({
         placeholder={placeholderText}
         value={mergedGuess}
         type="text"
-        readOnly
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         disabled={disabled}
       />
