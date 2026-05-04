@@ -6,9 +6,9 @@ Fast-paced word guessing game. Beat the clock. Find the word.
 
 WordRush is a fast-paced word guessing game built with React. Players must guess words from clues before the timer runs out. The game features hints, scoring, animations, and a smooth responsive UI.
 
-## Live Demo
+## 🚀Live Demo
 
-https://wordrush-alpha.vercel.app/
+👉 https://wordrush-alpha.vercel.app/
 
 ---
 
@@ -29,8 +29,8 @@ https://wordrush-alpha.vercel.app/
 ## Screenshots
 
 <p align="center">
-  <img src="public/screenshots/start.png" width="600"/>
-  <img src="public/screenshots/gameplay.png" width="600"/>
+  <img src="public/screenshots/start.png" width="600"/><br/>
+  <img src="public/screenshots/gameplay.png" width="600"/><br/>
   <img src="public/screenshots/gameover.png" width="600"/>
 </p>
 
@@ -42,7 +42,7 @@ https://wordrush-alpha.vercel.app/
 - Vite
 - CSS Modules
 - JavaScript
-- Natural (WordNet) for word generation
+- Natural (WordNet) for word dataset generation
 
 ---
 
@@ -114,3 +114,7 @@ tools/
 ## Status
 
 🚀 Alpha version deployed
+
+---
+
+Built as a modern React project focused on gameplay experience, UI polish, and performance.
