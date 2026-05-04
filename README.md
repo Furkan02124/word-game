@@ -2,6 +2,7 @@
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite)
 ![Status](https://img.shields.io/badge/status-alpha-orange)
 # WordRush
+Fast-paced word guessing game. Beat the clock. Find the word.
 
 WordRush is a fast-paced word guessing game built with React. Players must guess words from clues before the timer runs out. The game features hints, scoring, animations, and a smooth responsive UI.
 
@@ -15,7 +16,7 @@ https://wordrush-alpha.vercel.app/
 
 - Timed gameplay
 - Clue-based word guessing
-- Local word bank (no API required)
+- Offline word bank (no API required)
 - Difficulty progression
 - Hint system (reveals letters with score penalty)
 - Score + best score tracking
