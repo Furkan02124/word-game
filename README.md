@@ -1,16 +1,108 @@
-# React + Vite
+# WordRush
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+WordRush is a fast-paced word guessing game built with React. Players must guess words from clues before the timer runs out. The game features hints, scoring, animations, and a smooth responsive UI.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+https://your-project-name.vercel.app
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Timed gameplay
+- Clue-based word guessing
+- Local word bank (no API required)
+- Difficulty progression
+- Hint system (reveals letters with score penalty)
+- Score + best score tracking
+- Sound effects with mute toggle
+- Animations for correct/wrong guesses
+- Fully responsive (mobile + desktop)
+- Restart & game-over flows
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+## Screenshots
+
+![Start](public/screenshots/start.png)
+![Gameplay](public/screenshots/gameplay.png)
+![Game Over](public/screenshots/gameover.png)
+---
+## Tech Stack
+
+- React
+- Vite
+- CSS Modules
+- JavaScript
+- Natural (WordNet) for word generation
+
+---
+
+## Getting Started
+
+### Install dependencies
+
+```bash
+npm install
+```
+### Run locally
+
+```bash
+npm run dev
+```
+### Build for production
+
+```bash
+npm run build
+```
+### Preview production build
+```bash
+npm run preview
+```
+---
+## Word Bank Generation
+
+### Generate common words
+```bash
+npm run generate:words
+```
+
+### Generate word bank with clues
+```bash
+npm run generate:bank
+```
+### Scripts are located in:
+tools/
+
+### Generated data is stored in:
+src/data/
+
+---
+
+## Project Structure
+```
+src/
+  assets/
+  components/
+  data/
+  pages/
+  styles/
+  utils/
+
+public/
+tools/
+```
+---
+
+## Gameplay
+
+* Each round presents a clue
+* Player types the correct word
+* Hints reveal letters but reduce score
+* Game ends when time runs out or all words are solved
+
+---
+
+## Status
+
+Alpha version deployed
