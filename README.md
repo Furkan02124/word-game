@@ -4,7 +4,7 @@ WordRush is a fast-paced word guessing game built with React. Players must guess
 
 ## Live Demo
 
-https://your-project-name.vercel.app
+https://wordrush-alpha.vercel.app/
 
 ---
 
